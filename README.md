@@ -206,5 +206,52 @@ On first run, npm may print warnings before the inspector starts. These did **no
 
 Press `Ctrl+C` in the terminal where `mcp dev` is running to stop the proxy and inspector.
 
-Recordings:
+Few working scenarios:
 ![Demo MCP Inspector](./assets/running_mcptools_in_mcp-inspector.gif)
+
+List Tools Function
+
+This function gets all available tools from the MCP server:
+
+async def list_tools(self) -> list[types.Tool]:
+    result = await self.session().list_tools()
+    return result.tools
+
+It's straightforward - we access our session (the connection to the server), call the built-in list_tools() method, and return the tools from the result.
+Call Tool Function
+
+This function executes a specific tool on the server:
+
+async def call_tool(
+    self, tool_name: str, tool_input: dict
+) -> types.CallToolResult | None:
+    return await self.session().call_tool(tool_name, tool_input)
+
+We pass the tool name and input parameters (provided by Claude) to the server and return the result.
+Testing the Client
+
+The client file includes a simple test harness at the bottom. You can run it directly to verify everything works:
+
+uv run mcp_client.py
+
+This will connect to your MCP server and print out the available tools. You should see output showing your tool definitions, including descriptions and input schemas.
+
+Once the client functions are implemented, you can test the complete flow by running your main application:
+
+uv run main.py
+
+Try asking: "What is the contents of the report.pdf document?"
+
+Here's what happens behind the scenes:
+
+    Your application uses the client to get available tools
+    These tools are sent to Claude along with your question
+    Claude decides to use the read_doc_contents tool
+    Your application uses the client to execute that tool
+    The result is returned to Claude, who then responds to you
+
+The client acts as the bridge between your application logic and the MCP server's functionality, making it easy to integrate powerful tools into your AI workflows.
+
+check read_resource method in mcp_client and check 2 new resources added in mcp_server to understand the concept of accessing resources
+
+![Accessing resources](./assets/accessing-resources.png)
