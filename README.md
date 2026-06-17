@@ -206,3 +206,5 @@ On first run, npm may print warnings before the inspector starts. These did **no
 
 Press `Ctrl+C` in the terminal where `mcp dev` is running to stop the proxy and inspector.
 
+Recordings:
+![Demo MCP Inspector](./assets/running_mcptools_in_mcp-inspector.gif)
